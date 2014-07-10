@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="defaultPersonInfo" class="com.mediaservices.model.Person" >
+    <property name="personId" value="99" />
+    <property name="name"  value="Fulanito Lopez" />
+    <property name="listOfAddress">
+	    <list>
+	      <ref bean="defaultAddressA"/>
+	      <ref bean="defaultAddressB"/>
+	    </list>
+  	</property>
+  </bean>
+  
+  <bean id="defaultAddressA" class="com.mediaservices.model.Address">
+    <property name="city" value="Pinamar" />
+    <property name="pinCode" value="7167" />
+    <property name="street" value="De la Foca 142" />
+  </bean>
+  
+  <bean id="defaultAddressB" class="com.mediaservices.model.Address">
+    <property name="city" value="Madariaga" />
+    <property name="pinCode" value="7166" />
+    <property name="street" value="Avellaneda 1137" />
+  </bean>
+ 
+  
+</beans>
