@@ -30,15 +30,11 @@
 
     <session-factory>
 
-      <!-- Database connection settings &sslfactory=org.postgresql.ssl.NonValidatingFactory  --> 
+      <!-- Database connection settings  --> 
       <property name="connection.driver_class">org.postgresql.Driver</property>
-      <!--  <property name="connection.driver_class">com.google.appengine.api.rdbms.AppEngineDriver</property> -->
-      <!--  <property name="connection.driver_class">com.postgresql.jdbc.GoogleDriver</property> -->
-      <!-- com.mysql.jdbc.GoogleDriver -->
-      <!--  <property name="connection.url">jdbc:google:postgresql://ec2-184-73-175-240.compute-1.amazonaws.com:5432/d4ja9u51negcls?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property> -->
-		<property name="connection.url">jdbc:postgresql://ec2-184-73-175-240.compute-1.amazonaws.com:5432/d4ja9u51negcls?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property>
-        <property name="connection.username">bvlllqplgddwxz</property>
-        <property name="connection.password">g_xzhn6xyxweYMCWkz3kT2gVis</property>
+		<property name="connection.url">jdbc:postgresql://ec2-54-204-45-196.compute-1.amazonaws.com:5432/db9p9ve344t53i?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property>
+        <property name="connection.username">mwndnollyngkju</property>
+        <property name="connection.password">SHTKlTOVK-jeUZuKl5B0L4yXgU</property>
 
         <!-- JDBC connection pool (use the built-in) -->
         <property name="connection.pool_size">1</property>

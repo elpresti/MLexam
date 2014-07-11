@@ -8,6 +8,6 @@
 <body>
 <h1>Welcome to the Weather Forecaster of ML!</h1>
 <h2>This is a REST API located at /api/</h2>
-<h3>Enjoy!</h3>
+<h3>Enjoy!!</h3>
 </body>
 </html>
