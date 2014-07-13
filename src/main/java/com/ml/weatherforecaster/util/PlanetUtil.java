@@ -1,4 +1,6 @@
-package com.ml.weatherforecaster.model;
+package com.ml.weatherforecaster.util;
+
+import com.ml.weatherforecaster.model.Planet;
 
 public class PlanetUtil {
 
@@ -52,23 +54,7 @@ public class PlanetUtil {
 	}
 	
 	public static void main(String[] args){
-		Planet planetaF = new Planet();
-		planetaF.setCivilizationName("Ferengi");
-		planetaF.setAngularSpeed(1);
-		planetaF.setDistanceToSun(500);
-		planetaF.setClockWise(true);
 		
-		Planet planetaB = new Planet();
-		planetaB.setCivilizationName("Betasoide");
-		planetaB.setAngularSpeed(3);
-		planetaB.setDistanceToSun(2000);
-		planetaB.setClockWise(true);
-		
-		Planet planetaV = new Planet();
-		planetaV.setCivilizationName("Betasoide");
-		planetaV.setAngularSpeed(3);
-		planetaV.setDistanceToSun(2000);
-		planetaV.setClockWise(false);
 		
 	}
 }

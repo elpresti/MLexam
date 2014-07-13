@@ -5,23 +5,17 @@ public class Planet {
 	private int distanceToSun; // [km]
 	private int angularSpeed;  // [degrees/day]
 	private boolean clockWise; // rotation direction
-	
-	public int getPosition(int dayNumber){
-		int planetPosition=-1;
-		if ( isAvalidDay(dayNumber)  &&  getAngularSpeed()  ){
-			//to be continued
-		}
-		return planetPosition;
-	}
-	
-	public boolean isAvalidDay(int dayNumber){
-		boolean isValid=false;
-		if ( (dayNumber > 0) && (dayNumber < (365*10)) ){
-			isValid=true;
-		}
-		return isValid;
-	}
+	private int orientation; // orientation to the sun
+	private double xCoordinate; // value of X coordinate from orientation, on a 2D plane
+	private double yCoordinate; // value of Y coordinate from orientation, on a 2D plane
 
+	public Planet(String civilizationName, int distanceToSun, int angularSpeed, boolean clockWise, int orientation){
+		setOrientation(orientation);
+		setAngularSpeed(angularSpeed);
+		setDistanceToSun(distanceToSun);
+		setCivilizationName(civilizationName);
+		setClockWise(clockWise);
+	}
 	
 	public String getCivilizationName() {
 		return civilizationName;
@@ -53,6 +47,91 @@ public class Planet {
 
 	public void setClockWise(boolean clockWise) {
 		this.clockWise = clockWise;
+	}
+
+	public int getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
+		updateXYcoordinates();
+	}
+	
+	public double getxCoordinate() {
+		return xCoordinate;
+	}
+
+	public void setxCoordinate(double xCoordinate) {
+		this.xCoordinate = xCoordinate;
+	}
+
+	public double getyCoordinate() {
+		return yCoordinate;
+	}
+
+	public void setyCoordinate(double yCoordinate) {
+		this.yCoordinate = yCoordinate;
+	}
+
+	public void advanceAday(){
+		if ( isClockWise() ){
+			int newOrientation = getOrientation();
+			newOrientation = newOrientation + getAngularSpeed();
+			if (newOrientation >= 360){
+				setOrientation(newOrientation - 360);
+			}else{
+				setOrientation(newOrientation);
+			}
+		}else{
+			int newOrientation = getOrientation();
+			newOrientation = newOrientation - getAngularSpeed();
+			if (newOrientation < 0){
+				setOrientation(newOrientation + 360);
+			}else{
+				setOrientation(newOrientation);
+			}
+		}
+	}
+	
+	private double getAdjacentValueOfRightTriangleFormed(int angle){
+		double value = 0;
+		double radiansAngle = Math.toRadians(angle);
+		value = Math.cos(radiansAngle) * getDistanceToSun();
+		return value; //[km]
+	}
+	
+	private double getOppositeValueOfRightTriangleFormed(int angle){
+		double value = 0;
+		double radiansAngle = Math.toRadians(angle);
+		value = Math.sin(radiansAngle) * getDistanceToSun();
+		return value; //[km]
+	}
+	
+	private void updateXYcoordinates(){
+		int LIMIT_1ST_QUADRANT=90; //1ST: OPP= +Y, ADJ= +X 
+		int LIMIT_2ND_QUADRANT=180; //2ND: OPP= +X, ADJ= -Y
+		int LIMIT_3TH_QUADRANT=270; //3TH: OPP= -Y, ADJ= -X
+		int LIMIT_4TH_QUADRANT=360; //4TH: OPP= -X, ADJ= +Y
+		if ( (getOrientation()>=0) && (getOrientation()<LIMIT_1ST_QUADRANT) ){
+			setyCoordinate( (getOppositeValueOfRightTriangleFormed( LIMIT_1ST_QUADRANT - getOrientation())) );
+			setxCoordinate( (getAdjacentValueOfRightTriangleFormed( LIMIT_1ST_QUADRANT - getOrientation())) );
+		}else{
+			if ( (getOrientation()>=LIMIT_1ST_QUADRANT) && (getOrientation()<LIMIT_2ND_QUADRANT) ){
+				setxCoordinate( (getOppositeValueOfRightTriangleFormed( LIMIT_2ND_QUADRANT - getOrientation())) );
+				setyCoordinate( (getAdjacentValueOfRightTriangleFormed( LIMIT_2ND_QUADRANT - getOrientation())) * (-1) );
+			}else{
+				if ( (getOrientation()>=LIMIT_2ND_QUADRANT) && (getOrientation()<LIMIT_3TH_QUADRANT) ){
+					setyCoordinate( (getOppositeValueOfRightTriangleFormed( LIMIT_3TH_QUADRANT - getOrientation())) * (-1) );
+					setxCoordinate( (getAdjacentValueOfRightTriangleFormed( LIMIT_3TH_QUADRANT - getOrientation())) * (-1) );
+				}else{
+					if ( (getOrientation()>=LIMIT_3TH_QUADRANT) && (getOrientation()<LIMIT_4TH_QUADRANT) ){
+						setxCoordinate( (getOppositeValueOfRightTriangleFormed( LIMIT_4TH_QUADRANT - getOrientation())) * (-1) );
+						setyCoordinate( (getAdjacentValueOfRightTriangleFormed( LIMIT_4TH_QUADRANT - getOrientation())) );
+					}
+				}
+			}
+		}
 	}
 	
 }
