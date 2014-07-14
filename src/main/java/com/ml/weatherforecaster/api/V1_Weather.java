@@ -37,7 +37,7 @@ public class V1_Weather {
 	    String output="No Data";
 	    GalaxyUtil galaxyUtil = new GalaxyUtil();
 	    galaxyUtil.doAll();
-	    output= "Job started, status printed in console";
+	    output= galaxyUtil.getStatusTxt();
 	    return output;
 	}
 	
