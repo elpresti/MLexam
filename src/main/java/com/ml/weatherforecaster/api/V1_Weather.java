@@ -8,6 +8,8 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ml.weatherforecaster.util.GalaxyUtil;
+
 import java.io.IOException;
 import java.security.Principal;
 import java.text.DateFormat;
@@ -20,10 +22,22 @@ public class V1_Weather {
 	private String defaultValue="UNKNOWN";
 	
 	@GET
+	@Path("/getWeather")
 	@Produces(MediaType.TEXT_HTML)
 	public String getWeather(){
 	    String output="No Data";
 	    output= "HOLA MUNDO!";
+	    return output;
+	}
+	
+	@GET
+	@Path("/doAll")
+	@Produces(MediaType.TEXT_HTML)
+	public String doAll(){
+	    String output="No Data";
+	    GalaxyUtil galaxyUtil = new GalaxyUtil();
+	    galaxyUtil.doAll();
+	    output= "Job started, status printed in console";
 	    return output;
 	}
 	

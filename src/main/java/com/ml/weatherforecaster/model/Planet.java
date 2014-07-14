@@ -1,6 +1,15 @@
 package com.ml.weatherforecaster.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="PLANETS")
 public class Planet {
+	@Id @GeneratedValue 
+	private int planetId;
 	private String civilizationName;
 	private int distanceToSun; // [km]
 	private int angularSpeed;  // [degrees/day]

@@ -52,8 +52,9 @@
         <property name="hbm2ddl.auto">update</property>
 
         <!-- Names the annotated entity class -->
-        <mapping class="com.mediaservices.model.Person"/>
-        <mapping class="com.mediaservices.model.Role"/>
+        <mapping class="com.ml.weatherforecaster.model.Galaxy"/>
+        <mapping class="com.ml.weatherforecaster.model.Planet"/>
+        <mapping class="com.ml.weatherforecaster.model.RainyDay"/>
 <!--         
         <mapping class="model.Vehicle"/>
         <mapping class="model.TwoWheeler"/>

@@ -2,6 +2,7 @@ package com.ml.weatherforecaster.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
@@ -21,39 +22,74 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="GALAXYS")
 public class Galaxy {
+	private int dayNumber; //today
+	
     @OneToMany (cascade=CascadeType.ALL)
     private ArrayList<Planet> planets = new ArrayList();
     
-    private Map<Integer,Integer> maxTrianglePerimeter;
+    private RainyDay maxTrianglePerimeter;
+    
+    @OneToMany (cascade=CascadeType.ALL)
+    private ArrayList<RainyDay> rainyDays = new ArrayList();
     
     @ElementCollection
-    @JoinTable(name="DROUGHTDAYS")
+    @JoinTable(name="DROUGHT_DAYS")
     @GenericGenerator(name="hilo-gen", strategy="hilo")
     @CollectionId(columns = { @Column(name="DAY_ID") }, generator = "hilo-gen", type = @Type(type="long"))
-    private Collection<Integer> droughtDays = new ArrayList();
+    private ArrayList<Integer> droughtDays = new ArrayList();
+    
+    @ElementCollection
+    @JoinTable(name="OPTIMUM_DAYS")
+    @GenericGenerator(name="hilo-gen", strategy="hilo")
+    @CollectionId(columns = { @Column(name="DAY_ID") }, generator = "hilo-gen", type = @Type(type="long"))
+    private ArrayList<Integer> optimumConditionsDays = new ArrayList();
     
     
     public void createGalaxy(){
     	getPlanets().add(new Planet("Ferengi",500,1,true,0));
     	getPlanets().add(new Planet("Betasoide",2000,3,true,0));
     	getPlanets().add(new Planet("Vulcano",1000,5,false,0));
+    	setMaxTrianglePerimeter(null);
     }
     
     public void advanceAday(){
-    	//TO DO
+    	getPlanets().get(0).advanceAday();
+    	getPlanets().get(1).advanceAday();
+    	getPlanets().get(2).advanceAday();
+    	setDayNumber(getDayNumber()+1);
+    	analyzeCurrentPlanetsPositions();
+    }
+    
+    public void analyzeCurrentPlanetsPositions(){
+    	if (areAlignedWithTheSun()){
+    		getDroughtDays().add(getDayNumber());
+    	}else{
+    		if (isSunInPlanetsTriangle()){
+    			RainyDay rainyDay = new RainyDay(getDayNumber(),calculateTrianglePerimeter());
+    			getRainyDays().add(rainyDay);
+    			if ( (getMaxTrianglePerimeter() == null) || (getMaxTrianglePerimeter().getTrianglePerimeter() < rainyDay.getTrianglePerimeter()) ) {
+    				setMaxTrianglePerimeter(rainyDay);
+    			}
+    		}else{
+    			if (areAlignedBetweenThemButNotWithSun()){
+    				getOptimumConditionsDays().add(getDayNumber());
+    			}
+    		}
+    	}
     }
     
     public boolean areAlignedWithTheSun(){
-    	boolean alignedWithSun = false;
-    	int posF = getPlanets().get(0).getOrientation();
-    	int posB = getPlanets().get(1).getOrientation();
-    	int posV = getPlanets().get(2).getOrientation();
-    	/*
+    	/*	Are aligned with the sun when:
 			1. posF = posB = posV
 			2. posF = posB = (posV+180)<360
 			3. posF = (posB+180)<360 = posV
 			4. (posF+180)<360 = posB = posV
 		*/
+    	boolean alignedWithSun = false;
+    	int posF = getPlanets().get(0).getOrientation();
+    	int posB = getPlanets().get(1).getOrientation();
+    	int posV = getPlanets().get(2).getOrientation();
+    	
 		if ( (posF == posB) && (posB == posV) ) {
 			alignedWithSun = true;
 		}else{
@@ -78,7 +114,7 @@ public class Galaxy {
 		return alignedWithSun;
     } 
 
-    public boolean alignedBetweenThem(){
+    public boolean areAlignedBetweenThemButNotWithSun(){
     	// Condition when three points are aligned:
     	// (X1-X0)/(X2-X1) = (Y1-Y0)/(Y2-Y1)
     	boolean areAligned=false;    	
@@ -140,7 +176,7 @@ public class Galaxy {
     	return (orientation >= 0);
     }
     
-    public double getTrianglePerimeter(){
+    public double calculateTrianglePerimeter(){
     	// Perimeter of a triangle = dAB + dAC + dBC
     	// Distance between two points (d) = SQR( (X1-X0)^2 + (Y1-Y0)^2 )
     	double perimeter=0;
@@ -173,20 +209,44 @@ public class Galaxy {
 		this.planets = planets;
 	}
 
-	public Map<Integer, Integer> getMaxTrianglePerimeter() {
+	public RainyDay getMaxTrianglePerimeter() {
 		return maxTrianglePerimeter;
 	}
 
-	public void setMaxTrianglePerimeter(Map<Integer, Integer> maxTrianglePerimeter) {
+	public void setMaxTrianglePerimeter(RainyDay maxTrianglePerimeter) {
 		this.maxTrianglePerimeter = maxTrianglePerimeter;
 	}
 
-	public Collection<Integer> getDroughtDays() {
+	public ArrayList<Integer> getDroughtDays() {
 		return droughtDays;
 	}
 
-	public void setDroughtDays(Collection<Integer> droughtDays) {
+	public void setDroughtDays(ArrayList<Integer> droughtDays) {
 		this.droughtDays = droughtDays;
 	}
-    
+
+	public int getDayNumber() {
+		return dayNumber;
+	}
+
+	public void setDayNumber(int dayNumber) {
+		this.dayNumber = dayNumber;
+	}
+
+	public ArrayList<RainyDay> getRainyDays() {
+		return rainyDays;
+	}
+
+	public void setRainyDays(ArrayList<RainyDay> rainyDays) {
+		this.rainyDays = rainyDays;
+	}
+
+	public ArrayList<Integer> getOptimumConditionsDays() {
+		return optimumConditionsDays;
+	}
+
+	public void setOptimumConditionsDays(ArrayList<Integer> optimumConditionsDays) {
+		this.optimumConditionsDays = optimumConditionsDays;
+	}
+	
 }
