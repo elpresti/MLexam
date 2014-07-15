@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/api/v1/clima/estimateWeather?nextDaysToEstimate=360</url>
+    <description>Populate database with weather conditions estimation</description>
+    <schedule>every 10 minutes from 11:00 to 12:00</schedule>
+    <timezone>America/Argentina/Buenos_Aires</timezone>
+    
+	<!-- use default version 
+    <target>version-1</target>
+	-->
+    
+  </cron>
+</cronentries>
