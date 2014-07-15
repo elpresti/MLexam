@@ -1,6 +1,11 @@
 package com.ml.weatherforecaster.util;
 
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+import com.ml.weatherforecaster.hibernate.HibernateUtil;
 import com.ml.weatherforecaster.model.Galaxy;
+import com.ml.weatherforecaster.model.RainyDay;
 import com.ml.weatherforecaster.model.Planet;
 
 public class GalaxyUtil {
@@ -8,31 +13,39 @@ public class GalaxyUtil {
 	private String statusTxt="";
 	
 	public boolean advanceDaysInGalaxy(int daysQuantity){
-		boolean sePudo=false;
+		boolean canDoIt=false;
+		Logger logger = Logger.getLogger("API_Logger");
 		try{
+			HibernateUtil.getOpenedSession().beginTransaction();
+			HibernateUtil.getOpenedSession().save(this.galaxy);
+
 			for (int diaActual=0; diaActual<daysQuantity; diaActual++){
 				getGalaxy().advanceAday();
 				setStatusTxt(getStatusTxt()+"<br> <br> Day number: "+getGalaxy().getDayNumber() );
-				setStatusTxt(getStatusTxt()+"<br> Planet "+getGalaxy().getPlanets().get(0).getCivilizationName()+"= ");
-				setStatusTxt(getStatusTxt()+"Orientation: "+getGalaxy().getPlanets().get(0).getOrientation()+"°, ");
-				setStatusTxt(getStatusTxt()+"X: "+getGalaxy().getPlanets().get(0).getxCoordinate()+" km, ");
-				setStatusTxt(getStatusTxt()+"Y: "+getGalaxy().getPlanets().get(0).getyCoordinate()+" km");
+				setStatusTxt(getStatusTxt()+"<br> Planet "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(0).getCivilizationName()+"= ");
+				setStatusTxt(getStatusTxt()+"Orientation: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(0).getOrientation()+"°, ");
+				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(0).getxCoordinate()+" km, ");
+				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(0).getyCoordinate()+" km");
 				
-				setStatusTxt(getStatusTxt()+"<br> Planet "+getGalaxy().getPlanets().get(1).getCivilizationName()+"= ");
-				setStatusTxt(getStatusTxt()+"Orientation: "+getGalaxy().getPlanets().get(1).getOrientation()+"°, ");
-				setStatusTxt(getStatusTxt()+"X: "+getGalaxy().getPlanets().get(1).getxCoordinate()+" km, ");
-				setStatusTxt(getStatusTxt()+"Y: "+getGalaxy().getPlanets().get(1).getyCoordinate()+" km");
+				setStatusTxt(getStatusTxt()+"<br> Planet "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(1).getCivilizationName()+"= ");
+				setStatusTxt(getStatusTxt()+"Orientation: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(1).getOrientation()+"°, ");
+				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(1).getxCoordinate()+" km, ");
+				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(1).getyCoordinate()+" km");
 				
-				setStatusTxt(getStatusTxt()+"<br> Planet "+getGalaxy().getPlanets().get(2).getCivilizationName()+"= ");
-				setStatusTxt(getStatusTxt()+"Orientation: "+getGalaxy().getPlanets().get(2).getOrientation()+"°, ");
-				setStatusTxt(getStatusTxt()+"X: "+getGalaxy().getPlanets().get(2).getxCoordinate()+" km, ");
-				setStatusTxt(getStatusTxt()+"Y: "+getGalaxy().getPlanets().get(2).getyCoordinate()+" km");
+				setStatusTxt(getStatusTxt()+"<br> Planet "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getCivilizationName()+"= ");
+				setStatusTxt(getStatusTxt()+"Orientation: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getOrientation()+"°, ");
+				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getxCoordinate()+" km, ");
+				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getyCoordinate()+" km");
 			}
-			sePudo=true;
-		}catch(Exception e){
+			HibernateUtil.getOpenedSession().getTransaction().commit();
+			HibernateUtil.getOpenedSession().close();
+			logger.info(daysQuantity + "day gone in the galaxy, planets info saved on DB!");
+			canDoIt=true;
+		}catch (Exception e) {
 			System.out.println(e.toString());
+			logger.warning(e.toString());
 		}
-		return sePudo;
+		return canDoIt;
 	}
 
 	public Galaxy getGalaxy() {
@@ -46,32 +59,32 @@ public class GalaxyUtil {
 	public void doAll(){
 		setGalaxy(new Galaxy());
 		getGalaxy().createGalaxy();
-		advanceDaysInGalaxy(400);
+		advanceDaysInGalaxy(100);
 		
 		//print summary of stats
 		if (getGalaxy().getDroughtDays().size() > 0 ){
 			setStatusTxt(getStatusTxt()+"<br><br> List of drought days founded:");
 			for (int i=0; i<getGalaxy().getDroughtDays().size(); i++){
-				setStatusTxt(getStatusTxt()+"<br> - Day number: "+getGalaxy().getDroughtDays().get(i) );
+				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getDroughtDays()).get(i) );
 			}			
 		}else{
 			setStatusTxt(getStatusTxt()+"<br><br> There where no drought days");
 		}
 		
 		if (getGalaxy().getOptimumConditionsDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> List of Optimum Conditions days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getOptimumConditionsDays().size()+" Optimum Conditions days founded:");
 			for (int i=0; i<getGalaxy().getOptimumConditionsDays().size(); i++){
-				setStatusTxt(getStatusTxt()+"<br> - Day number: "+getGalaxy().getOptimumConditionsDays().get(i) );
+				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getOptimumConditionsDays()).get(i) );
 			}
 		}else{
 			setStatusTxt(getStatusTxt()+"<br><br> There where no Optimum Conditions Days");
 		}
 		
 		if (getGalaxy().getRainyDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> List of Rainy Days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getRainyDays().size()+" Rainy Days founded:");
 			for (int i=0; i<getGalaxy().getRainyDays().size(); i++){
-				setStatusTxt(getStatusTxt()+"<br> - Day number: "+getGalaxy().getRainyDays().get(i).getDayNumber() );
-				setStatusTxt(getStatusTxt()+"<br> - Triangle perimeter: "+getGalaxy().getRainyDays().get(i).getTrianglePerimeter() );
+				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<RainyDay>(getGalaxy().getRainyDays()).get(i).getDayNumber() );
+				setStatusTxt(getStatusTxt()+"<br> - Triangle perimeter: "+new ArrayList<RainyDay>(getGalaxy().getRainyDays()).get(i).getTrianglePerimeter() );
 			}
 		}else{
 			setStatusTxt(getStatusTxt()+"<br><br> There where no Rainy Days");

@@ -1,5 +1,7 @@
 package com.ml.weatherforecaster.model;
 
+import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,9 +11,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CollectionId;
@@ -22,27 +27,31 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="GALAXYS")
 public class Galaxy {
+	@Id @GeneratedValue
+	private int galaxyId;
+	
 	private int dayNumber; //today
 	
     @OneToMany (cascade=CascadeType.ALL)
-    private ArrayList<Planet> planets = new ArrayList();
+    private Collection<Planet> planets = new ArrayList();
     
+    @OneToOne (cascade=CascadeType.ALL)
     private RainyDay maxTrianglePerimeter;
     
     @OneToMany (cascade=CascadeType.ALL)
-    private ArrayList<RainyDay> rainyDays = new ArrayList();
+    private Collection<RainyDay> rainyDays = new ArrayList();
     
     @ElementCollection
     @JoinTable(name="DROUGHT_DAYS")
     @GenericGenerator(name="hilo-gen", strategy="hilo")
     @CollectionId(columns = { @Column(name="DAY_ID") }, generator = "hilo-gen", type = @Type(type="long"))
-    private ArrayList<Integer> droughtDays = new ArrayList();
+    private Collection<Integer> droughtDays = new ArrayList();
     
     @ElementCollection
     @JoinTable(name="OPTIMUM_DAYS")
     @GenericGenerator(name="hilo-gen", strategy="hilo")
     @CollectionId(columns = { @Column(name="DAY_ID") }, generator = "hilo-gen", type = @Type(type="long"))
-    private ArrayList<Integer> optimumConditionsDays = new ArrayList();
+    private Collection<Integer> optimumConditionsDays = new ArrayList();
     
     
     public void createGalaxy(){
@@ -53,9 +62,9 @@ public class Galaxy {
     }
     
     public void advanceAday(){
-    	getPlanets().get(0).advanceAday();
-    	getPlanets().get(1).advanceAday();
-    	getPlanets().get(2).advanceAday();
+    	new ArrayList<Planet>(getPlanets()).get(0).advanceAday();
+    	new ArrayList<Planet>(getPlanets()).get(1).advanceAday();
+    	new ArrayList<Planet>(getPlanets()).get(2).advanceAday();
     	setDayNumber(getDayNumber()+1);
     	analyzeCurrentPlanetsPositions();
     }
@@ -86,9 +95,9 @@ public class Galaxy {
 			4. (posF+180)<360 = posB = posV
 		*/
     	boolean alignedWithSun = false;
-    	int posF = getPlanets().get(0).getOrientation();
-    	int posB = getPlanets().get(1).getOrientation();
-    	int posV = getPlanets().get(2).getOrientation();
+    	int posF = new ArrayList<Planet>(getPlanets()).get(0).getOrientation();
+    	int posB = new ArrayList<Planet>(getPlanets()).get(1).getOrientation();
+    	int posV = new ArrayList<Planet>(getPlanets()).get(2).getOrientation();
     	
 		if ( (posF == posB) && (posB == posV) ) {
 			alignedWithSun = true;
@@ -114,78 +123,75 @@ public class Galaxy {
 		return alignedWithSun;
     } 
 
-    public boolean areAlignedBetweenThemButNotWithSun(){
+    public boolean areAlignedBetweenThemButNotWithSun(){ //(using precision < 0.1km) 
     	// Condition when three points are aligned:
     	// (X1-X0)/(X2-X1) = (Y1-Y0)/(Y2-Y1)
     	boolean areAligned=false;    	
-    	double firstMember = getPlanets().get(1).getxCoordinate() - getPlanets().get(0).getxCoordinate();
-    	firstMember = firstMember / (getPlanets().get(2).getxCoordinate() - getPlanets().get(1).getxCoordinate());
-    	double secondMember = getPlanets().get(1).getyCoordinate() - getPlanets().get(0).getyCoordinate();
-    	secondMember = secondMember / (getPlanets().get(2).getyCoordinate() - getPlanets().get(1).getyCoordinate());
-    	if (firstMember == secondMember){
+    	double firstMember = new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate();
+    	firstMember = firstMember / (new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate() - new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate());
+    	double secondMember = new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate();
+    	secondMember = secondMember / (new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate() - new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate());
+    	if ( (((firstMember - secondMember)>=0)  &&  ((firstMember - secondMember) < 0.1))  || 
+    			( ((secondMember - firstMember)>=0)  &&  ((secondMember - firstMember) < 0.1)) ){
     		areAligned=true;
     	}
     	return areAligned;
     }
     
-    public boolean isSunInPlanetsTriangle(){
-    	//Need to estimate if a point is inside the triangle or not
-    	//1.  Get Triangle Orientation
-    	//2.a If triangle orientation is positive, the point is inside the triangle only if the orientation of all the 
-    	//		triangles that have the point as a vertex, are positive. Other way, the point is outside the triangle.
-    	//2.b If triangle orientation is negative, the point is inside the triangle only if the orientation of all the 
-    	//		triangles that have the point as a vertex, are negative. Other way, the point is outside the triangle.
-    	// NOTE: Sun coordinates (0,0)
-    	boolean sunInsideTriangle=false;
-    	if (isTriangleOrientationPositive(getPlanets().get(2).getxCoordinate(), getPlanets().get(2).getyCoordinate(), 
-    			getPlanets().get(1).getxCoordinate(), getPlanets().get(1).getyCoordinate(), 
-    			getPlanets().get(0).getxCoordinate(), getPlanets().get(0).getyCoordinate())){
-    		if (isTriangleOrientationPositive(getPlanets().get(0).getxCoordinate(), getPlanets().get(0).getyCoordinate(), 
-    			getPlanets().get(1).getxCoordinate(), getPlanets().get(1).getyCoordinate(), 
-    			0, 0)){
-    			if (isTriangleOrientationPositive(getPlanets().get(1).getxCoordinate(), getPlanets().get(1).getyCoordinate(), 
-    	    			getPlanets().get(2).getxCoordinate(), getPlanets().get(2).getyCoordinate(), 
-    	    			0, 0)){
-    				if (isTriangleOrientationPositive(getPlanets().get(2).getxCoordinate(), getPlanets().get(2).getyCoordinate(), 
-        	    			getPlanets().get(0).getxCoordinate(), getPlanets().get(0).getyCoordinate(), 
-        	    			0, 0)){
-    					sunInsideTriangle=true;
-        			}
-    			}
-    		}
-    	}else{
-    		if (!(isTriangleOrientationPositive(getPlanets().get(0).getxCoordinate(), getPlanets().get(0).getyCoordinate(), 
-        			getPlanets().get(1).getxCoordinate(), getPlanets().get(1).getyCoordinate(), 
-        			0, 0))){
-        			if (!(isTriangleOrientationPositive(getPlanets().get(1).getxCoordinate(), getPlanets().get(1).getyCoordinate(), 
-        	    			getPlanets().get(2).getxCoordinate(), getPlanets().get(2).getyCoordinate(), 
-        	    			0, 0))){
-        				if (!(isTriangleOrientationPositive(getPlanets().get(2).getxCoordinate(), getPlanets().get(2).getyCoordinate(), 
-            	    			getPlanets().get(0).getxCoordinate(), getPlanets().get(0).getyCoordinate(), 
-            	    			0, 0))){
-        					sunInsideTriangle=true;
-            			}
-        			}
-        	}
+    public boolean areAlignedBetweenThemButNotWithSun_morePrecision(){ //(Using BigDecimal) not working!
+    	// Condition when three points are aligned:
+    	// (X1-X0)/(X2-X1) = (Y1-Y0)/(Y2-Y1)
+    	boolean areAligned=false;
+    	try{
+    		BigDecimal firstMemberPart1 = BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate()).subtract(BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate()));
+        	BigDecimal firstMemberPart2 = BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate()).subtract(BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate()));
+        	BigDecimal firstMember = firstMemberPart1.divide(firstMemberPart2);
+
+        	BigDecimal secondMemberPart1 = BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate()).subtract(BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate()));
+        	BigDecimal secondMemberPart2 = BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate()).subtract(BigDecimal.valueOf(new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate()));
+        	BigDecimal secondMember = secondMemberPart1.divide(secondMemberPart2);
+        	int firstCompare = firstMember.subtract(secondMember).compareTo(BigDecimal.valueOf(0));
+        	int secondCompare = secondMember.subtract(firstMember).compareTo(BigDecimal.valueOf(0));
+        	
+        	if ( (firstCompare == 0)  ||  (secondCompare == 0) ){
+        		areAligned=true;
+        	}	
+    	}catch(Exception e){
+    		System.out.println(e.toString());
     	}
-    	return sunInsideTriangle;
+    	return areAligned;
     }
-    
-    private boolean isTriangleOrientationPositive(double x2, double y2, double x1, double y1, double x0, double y0){
-    	double orientation = (x0 - x2) * (y1 - y2) - (y0 - y2) * (x1 - x2);
-    	return (orientation >= 0);
+        
+    private double triangleOrientation(Point2D P1,Point2D P2,Point2D P3){
+    	//area of the triangle P1P2P3, return > 0 if it's positive oriented, return < 0 in other case
+    	return (P1.getX() - P3.getX())*(P2.getY() - P3.getY())-(P1.getY() - P3.getY())*(P2.getX() - P3.getX());
+    }
+
+    public boolean isSunInPlanetsTriangle() {
+    	//Need to estimate if a point is inside the triangle or not, calculating the triangle orientation using the sun as a vertex
+    	boolean sunInsideTriangle= false;
+    	Point2D P1 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate());
+    	Point2D P2 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate());
+    	Point2D P3 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate());
+    	Point2D P4 = new Point2D.Double(0, 0); //Sun Coordinates
+        if(triangleOrientation(P1,P2,P3)>=0){
+        	 sunInsideTriangle = (triangleOrientation(P1, P2, P4) >= 0)  &&  (triangleOrientation(P2, P3, P4) >= 0)  &&  (triangleOrientation(P3, P1, P4) >= 0);
+        }else{
+        	 sunInsideTriangle = (triangleOrientation(P1, P2, P4) <= 0)  &&  (triangleOrientation(P2, P3, P4) <= 0)  &&  (triangleOrientation(P3, P1, P4) <= 0);  
+        }
+        return sunInsideTriangle;
     }
     
     public double calculateTrianglePerimeter(){
     	// Perimeter of a triangle = dAB + dAC + dBC
     	// Distance between two points (d) = SQR( (X1-X0)^2 + (Y1-Y0)^2 )
     	double perimeter=0;
-    	perimeter += Math.sqrt( Math.pow(getPlanets().get(1).getxCoordinate() - getPlanets().get(0).getxCoordinate(),2) + 
-    			Math.pow(getPlanets().get(1).getyCoordinate() - getPlanets().get(0).getyCoordinate(),2) );
-    	perimeter += Math.sqrt( Math.pow(getPlanets().get(2).getxCoordinate() - getPlanets().get(0).getxCoordinate(),2) + 
-    			Math.pow(getPlanets().get(2).getyCoordinate() - getPlanets().get(0).getyCoordinate(),2) );
-    	perimeter += Math.sqrt( Math.pow(getPlanets().get(2).getxCoordinate() - getPlanets().get(1).getxCoordinate(),2) + 
-    			Math.pow(getPlanets().get(2).getyCoordinate() - getPlanets().get(1).getyCoordinate(),2) );
+    	perimeter += Math.sqrt( Math.pow(new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate(),2) + 
+    			Math.pow(new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate(),2) );
+    	perimeter += Math.sqrt( Math.pow(new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate(),2) + 
+    			Math.pow(new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate() - new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate(),2) );
+    	perimeter += Math.sqrt( Math.pow(new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate() - new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate(),2) + 
+    			Math.pow(new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate() - new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate(),2) );
     	return perimeter;
     }
     
@@ -201,11 +207,11 @@ public class Galaxy {
 		return isIt;
     }
     
-	public ArrayList<Planet> getPlanets() {
+	public Collection<Planet> getPlanets() {
 		return planets;
 	}
 
-	public void setPlanets(ArrayList<Planet> planets) {
+	public void setPlanets(Collection<Planet> planets) {
 		this.planets = planets;
 	}
 
@@ -217,11 +223,11 @@ public class Galaxy {
 		this.maxTrianglePerimeter = maxTrianglePerimeter;
 	}
 
-	public ArrayList<Integer> getDroughtDays() {
+	public Collection<Integer> getDroughtDays() {
 		return droughtDays;
 	}
 
-	public void setDroughtDays(ArrayList<Integer> droughtDays) {
+	public void setDroughtDays(Collection<Integer> droughtDays) {
 		this.droughtDays = droughtDays;
 	}
 
@@ -233,20 +239,28 @@ public class Galaxy {
 		this.dayNumber = dayNumber;
 	}
 
-	public ArrayList<RainyDay> getRainyDays() {
+	public Collection<RainyDay> getRainyDays() {
 		return rainyDays;
 	}
 
-	public void setRainyDays(ArrayList<RainyDay> rainyDays) {
+	public void setRainyDays(Collection<RainyDay> rainyDays) {
 		this.rainyDays = rainyDays;
 	}
 
-	public ArrayList<Integer> getOptimumConditionsDays() {
+	public Collection<Integer> getOptimumConditionsDays() {
 		return optimumConditionsDays;
 	}
 
-	public void setOptimumConditionsDays(ArrayList<Integer> optimumConditionsDays) {
+	public void setOptimumConditionsDays(Collection<Integer> optimumConditionsDays) {
 		this.optimumConditionsDays = optimumConditionsDays;
+	}
+
+	public int getGalaxyId() {
+		return galaxyId;
+	}
+
+	public void setGalaxyId(int galaxyId) {
+		this.galaxyId = galaxyId;
 	}
 	
 }
