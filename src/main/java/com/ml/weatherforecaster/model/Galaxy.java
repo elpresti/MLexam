@@ -162,22 +162,29 @@ public class Galaxy {
     	return areAligned;
     }
         
-    private double triangleOrientation(Point2D P1,Point2D P2,Point2D P3){
+    private double triangleOrientation(double x1, double y1, double x2, double y2, double x3, double y3){
     	//area of the triangle P1P2P3, return > 0 if it's positive oriented, return < 0 in other case
-    	return (P1.getX() - P3.getX())*(P2.getY() - P3.getY())-(P1.getY() - P3.getY())*(P2.getX() - P3.getX());
+    	return (x1 - x3)*(y2 - y3)-(y1 - y3)*(x2 - x3);
     }
 
     public boolean isSunInPlanetsTriangle() {
     	//Need to estimate if a point is inside the triangle or not, calculating the triangle orientation using the sun as a vertex
     	boolean sunInsideTriangle= false;
-    	Point2D P1 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate());
-    	Point2D P2 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate());
-    	Point2D P3 = new Point2D.Double(new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate(), new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate());
-    	Point2D P4 = new Point2D.Double(0, 0); //Sun Coordinates
-        if(triangleOrientation(P1,P2,P3)>=0){
-        	 sunInsideTriangle = (triangleOrientation(P1, P2, P4) >= 0)  &&  (triangleOrientation(P2, P3, P4) >= 0)  &&  (triangleOrientation(P3, P1, P4) >= 0);
+    	double x1 = new ArrayList<Planet>(getPlanets()).get(0).getxCoordinate();
+    	double x2 = new ArrayList<Planet>(getPlanets()).get(1).getxCoordinate();
+    	double x3 = new ArrayList<Planet>(getPlanets()).get(2).getxCoordinate();
+
+    	double y1 = new ArrayList<Planet>(getPlanets()).get(0).getyCoordinate();
+    	double y2 = new ArrayList<Planet>(getPlanets()).get(1).getyCoordinate();
+    	double y3 = new ArrayList<Planet>(getPlanets()).get(2).getyCoordinate();
+    	
+    	double x4 = 0; //Sun Coordinates
+    	double y4 = 0;
+ 
+        if(triangleOrientation(x1,y1,x2,y2,x3,y3)>=0){
+        	 sunInsideTriangle = (triangleOrientation(x1,y1,x2,y2,x4,y4) >= 0)  &&  (triangleOrientation(x2,y2,x3,y3,x4,y4) >= 0)  &&  (triangleOrientation(x3,y3,x1,y1,x4,y4) >= 0);
         }else{
-        	 sunInsideTriangle = (triangleOrientation(P1, P2, P4) <= 0)  &&  (triangleOrientation(P2, P3, P4) <= 0)  &&  (triangleOrientation(P3, P1, P4) <= 0);  
+        	 sunInsideTriangle = (triangleOrientation(x1,y1,x2,y2,x4,y4) <= 0)  &&  (triangleOrientation(x2,y2,x3,y3,x4,y4) <= 0)  &&  (triangleOrientation(x3,y3,x1,y1,x4,y4) <= 0);  
         }
         return sunInsideTriangle;
     }

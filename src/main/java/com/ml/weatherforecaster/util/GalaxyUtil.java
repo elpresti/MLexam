@@ -54,7 +54,7 @@ public class GalaxyUtil {
 			logger.info(daysQuantity + " days gone in the galaxy, planets info saved on DB! Today is day number: "+getGalaxy().getDayNumber());
 			canDoIt=true;
 		}catch (Exception e) {
-			System.out.println(e.toString());
+			System.out.println("EXEPTION!--> in advanceDaysInGalaxy(): "+e.toString());
 			logger.warning(e.toString());
 		}
 		return canDoIt;
@@ -73,6 +73,7 @@ public class GalaxyUtil {
 			setGalaxy(new Galaxy());
 			getGalaxy().createGalaxy();
 		}
+		setStatusTxt("");
 		advanceDaysInGalaxy(nextDaysToEstimate);
 		
 		//print summary of stats
@@ -80,7 +81,7 @@ public class GalaxyUtil {
 			setStatusTxt(getStatusTxt()+"<br><br> List of drought days founded:");
 			for (int i=0; i<getGalaxy().getDroughtDays().size(); i++){
 				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getDroughtDays()).get(i) );
-			}			
+			}
 		}else{
 			setStatusTxt(getStatusTxt()+"<br><br> There where no drought days");
 		}
@@ -113,6 +114,22 @@ public class GalaxyUtil {
 		
 	}
 
+	public int getNumberOfPeriods(ArrayList<Integer> numbers){
+		int periods=0;
+		if (numbers!= null  &&  numbers.size()>0){
+			periods++;
+			int lastNumber=numbers.get(0);
+			for (int i=1;i<numbers.size();i++){
+				if (lastNumber+1  !=  numbers.get(i)){
+					periods++;
+				}
+				lastNumber=numbers.get(i);
+			}
+		}
+		
+		return periods;
+	}
+	
 	public String getStatusTxt() {
 		return statusTxt;
 	}

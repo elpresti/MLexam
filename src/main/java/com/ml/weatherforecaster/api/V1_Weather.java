@@ -8,12 +8,14 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ml.weatherforecaster.hibernate.HibernateGalaxy;
 import com.ml.weatherforecaster.util.GalaxyUtil;
 
 import java.io.IOException;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Path("/v1/clima/")
@@ -51,13 +53,42 @@ public class V1_Weather {
 		String output="No Data";
 		if ( (GalaxyUtil.getInstance().getGalaxy() != null)  &&  (GalaxyUtil.getInstance().getGalaxy().getDayNumber() + nextDaysToEstimate) <= (getEstimationDaysLimit()) 
 				|| (GalaxyUtil.getInstance().getGalaxy() == null) ) {
-			GalaxyUtil.getInstance().estimateWeatherStoreResultsAndShow(nextDaysToEstimate);
+			if (nextDaysToEstimate>0){
+				GalaxyUtil.getInstance().estimateWeatherStoreResultsAndShow(nextDaysToEstimate);				
+			}else{
+				output="Invalid day. Please especify a valid number of days to estimate";
+			}
 		}
 		output= GalaxyUtil.getInstance().getStatusTxt();
 	    return output;
 	}
 	
+	@GET
+	@Path("/diasDeCondicionesOptimas")
+	@Produces(MediaType.TEXT_HTML)
+	public String diasDeCondicionesOptimas(){
+		String output="No hay dias de condiciones climáticas óptimas";
+		ArrayList<Integer> optimumDays = HibernateGalaxy.getInstance().getOptimumConditionsDays();
+		if (optimumDays.size()>0){
+			output="Los dias de condiciones climaticas ópimas que se encontraron en la BD son los siguientes:<br>";
+			for(Integer dayNumber : optimumDays){
+				output +="- Dia número: "+dayNumber+"<br>";
+			}
+		}
+	    return output;
+	}
 	
+	@GET
+	@Path("/periodosDeCondicionesOptimas")
+	@Produces(MediaType.TEXT_HTML)
+	public String periodosDeCondicionesOptimas(){
+		String output="No hay períodos de condiciones climáticas óptimas";
+		Integer optimumPeriods = HibernateGalaxy.getInstance().getOptimumConditionsPeriods();
+		if (optimumPeriods>0){
+			output="En la DB se encontraron "+optimumPeriods+" períodos de condiciones climaticas ópimas<br>";
+		}
+	    return output;
+	}
 
 	public String getDefaultValue() {
 		return defaultValue;

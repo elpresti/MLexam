@@ -13,6 +13,10 @@ public class RainyDay {
 	private int dayNumber;
 	private double trianglePerimeter;
 	
+	public RainyDay(){
+		
+	}
+	
 	public RainyDay(int dayNumber,double tringlePerimeter){
 		setDayNumber(dayNumber);
 		setTrianglePerimeter(tringlePerimeter);
