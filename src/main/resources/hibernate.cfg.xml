@@ -30,8 +30,8 @@
 
     <session-factory>
 
-      <!-- Database connection settings  --> 
-      <property name="connection.driver_class">org.postgresql.Driver</property>
+        <!-- Database connection settings  --> 
+        <property name="connection.driver_class">org.postgresql.Driver</property>
 		<property name="connection.url">jdbc:postgresql://ec2-54-204-45-196.compute-1.amazonaws.com:5432/db9p9ve344t53i?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property>
         <property name="connection.username">mwndnollyngkju</property>
         <property name="connection.password">SHTKlTOVK-jeUZuKl5B0L4yXgU</property>
@@ -49,7 +49,7 @@
         <property name="show_sql">true</property>
 
         <!-- Drop and re-create the database schema on startup create/update -->
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
 
         <!-- Names the annotated entity class -->
         <mapping class="com.ml.weatherforecaster.model.Galaxy"/>

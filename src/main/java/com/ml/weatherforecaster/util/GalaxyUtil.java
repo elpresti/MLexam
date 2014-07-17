@@ -33,7 +33,9 @@ public class GalaxyUtil {
 		try{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
-			session.save(getGalaxy());
+			//session.save(getGalaxy());
+			setGalaxy((Galaxy)session.get(Galaxy.class,1));
+			
 
 			for (int dayIndex=0; dayIndex<daysQuantity; dayIndex++){
 				getGalaxy().advanceAday();
@@ -73,22 +75,21 @@ public class GalaxyUtil {
 	}
 	
 	public void estimateWeatherStoreResultsAndShow(int nextDaysToEstimate){
+		try{
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			Transaction tx = session.beginTransaction();
+			
 		if (getGalaxy() == null){
-			try{
-				Session session = HibernateUtil.getSessionFactory().openSession();
-				Transaction tx = session.beginTransaction();
 				Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
 				tx.commit();
-				session.close();
+				//session.close();
 				if (galaxy != null){
 					setGalaxy(galaxy);
 				}else{
 					setGalaxy(new Galaxy());
 					getGalaxy().createGalaxy();
 				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
+			
 		}
 		setStatusTxt("");
 		advanceDaysInGalaxy(nextDaysToEstimate);
@@ -128,7 +129,10 @@ public class GalaxyUtil {
 		}else{
 			setStatusTxt(getStatusTxt()+"<br><br> So, there where no max triangle perimeter");
 		}
-		
+		session.close();
+		}catch(Exception e){
+			System.out.println(e.toString());
+		}
 	}
 
 	public int getNumberOfPeriods(ArrayList<Integer> numbers){
