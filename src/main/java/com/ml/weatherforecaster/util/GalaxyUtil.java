@@ -74,8 +74,21 @@ public class GalaxyUtil {
 	
 	public void estimateWeatherStoreResultsAndShow(int nextDaysToEstimate){
 		if (getGalaxy() == null){
-			setGalaxy(new Galaxy());
-			getGalaxy().createGalaxy();
+			try{
+				Session session = HibernateUtil.getSessionFactory().openSession();
+				Transaction tx = session.beginTransaction();
+				Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
+				tx.commit();
+				session.close();
+				if (galaxy != null){
+					setGalaxy(galaxy);
+				}else{
+					setGalaxy(new Galaxy());
+					getGalaxy().createGalaxy();
+				}
+			}catch(Exception e){
+				System.out.println(e.toString());
+			}
 		}
 		setStatusTxt("");
 		advanceDaysInGalaxy(nextDaysToEstimate);

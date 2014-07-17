@@ -73,12 +73,11 @@ public class V1_Weather {
 		String output="There are no days of optimum weather conditions saved on DB";
 		ArrayList<Integer> optimumDays = HibernateGalaxy.getInstance().getOptimumConditionsDays();
 		if (optimumDays.size()>0){
-			output="Optimum weather conditions days found on DB are:<br>";
+			output="Total: "+optimumDays.size()+".<br><br>Calculated using an estimation error of up to 0.1km.<br><br>Optimum weather conditions days found on DB are:<br>";
 			for(Integer dayNumber : optimumDays){
 				output +="- Day number: "+dayNumber+"<br>";
 			}
 		}
-		output+="<br><br>Calculated using an estimation error of up to 0.1km";
 	    return output;
 	}
 	
@@ -102,7 +101,7 @@ public class V1_Weather {
 		String output="There are no rainy days saved on DB";
 		ArrayList<Integer> rainyDays = HibernateGalaxy.getInstance().getRainyDays();
 		if (rainyDays.size()>0){
-			output="Rainy days found on DB are:<br>";
+			output="Total: "+rainyDays.size()+". Rainy days found on DB are:<br>";
 			for(Integer dayNumber : rainyDays){
 				output +="- Day number: "+dayNumber+"<br>";
 			}
@@ -129,7 +128,7 @@ public class V1_Weather {
 		String output="There are no Drought Days saved on DB";
 		ArrayList<Integer> droughtDays = HibernateGalaxy.getInstance().getDroughtDays();
 		if (droughtDays.size()>0){
-			output="Drought Days found on DB are:<br>";
+			output="Total: "+droughtDays.size()+". Drought Days found on DB are:<br>";
 			for(Integer dayNumber : droughtDays){
 				output +="- Day number: "+dayNumber+"<br>";
 			}
