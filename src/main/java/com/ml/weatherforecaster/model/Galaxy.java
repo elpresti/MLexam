@@ -55,18 +55,28 @@ public class Galaxy {
     
     
     public void createGalaxy(){
-    	getPlanets().add(new Planet("Ferengi",500,1,true,0));
-    	getPlanets().add(new Planet("Betasoide",2000,3,true,0));
-    	getPlanets().add(new Planet("Vulcano",1000,5,false,0));
+    	Planet pFerengi = new Planet();
+    	pFerengi.initialize("Ferengi",500,1,true,0);
+    	Planet pBetasoide = new Planet();
+    	pBetasoide.initialize("Betasoide",2000,3,true,0);
+    	Planet pVulcano = new Planet();
+    	pVulcano.initialize("Vulcano",1000,5,false,0);
+    	getPlanets().add(pFerengi);
+    	getPlanets().add(pBetasoide);
+    	getPlanets().add(pVulcano);
     	setMaxTrianglePerimeter(null);
     }
     
     public void advanceAday(){
-    	new ArrayList<Planet>(getPlanets()).get(0).advanceAday();
-    	new ArrayList<Planet>(getPlanets()).get(1).advanceAday();
-    	new ArrayList<Planet>(getPlanets()).get(2).advanceAday();
-    	setDayNumber(getDayNumber()+1);
-    	analyzeCurrentPlanetsPositions();
+    	try{
+    		new ArrayList<Planet>(getPlanets()).get(0).advanceAday();
+        	new ArrayList<Planet>(getPlanets()).get(1).advanceAday();
+        	new ArrayList<Planet>(getPlanets()).get(2).advanceAday();
+        	setDayNumber(getDayNumber()+1);
+        	analyzeCurrentPlanetsPositions();
+    	}catch(Exception e){
+    		System.out.println("EXCEPTION on Galaxy.advanceAday(): "+e.toString());
+    	}
     }
     
     public void analyzeCurrentPlanetsPositions(){
@@ -74,7 +84,8 @@ public class Galaxy {
     		getDroughtDays().add(getDayNumber());
     	}else{
     		if (isSunInPlanetsTriangle()){
-    			RainyDay rainyDay = new RainyDay(getDayNumber(),calculateTrianglePerimeter());
+    			RainyDay rainyDay = new RainyDay();
+    			rainyDay.initialize(getDayNumber(),calculateTrianglePerimeter());
     			getRainyDays().add(rainyDay);
     			if ( (getMaxTrianglePerimeter() == null) || (getMaxTrianglePerimeter().getTrianglePerimeter() < rainyDay.getTrianglePerimeter()) ) {
     				setMaxTrianglePerimeter(rainyDay);

@@ -3,6 +3,9 @@ package com.ml.weatherforecaster.util;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import com.ml.weatherforecaster.hibernate.HibernateUtil;
 import com.ml.weatherforecaster.model.Galaxy;
 import com.ml.weatherforecaster.model.RainyDay;
@@ -28,8 +31,9 @@ public class GalaxyUtil {
 		boolean canDoIt=false;
 		Logger logger = Logger.getLogger("API_Logger");
 		try{
-			HibernateUtil.getOpenedSession().beginTransaction();
-			HibernateUtil.getOpenedSession().save(this.galaxy);
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			Transaction tx = session.beginTransaction();
+			session.save(getGalaxy());
 
 			for (int dayIndex=0; dayIndex<daysQuantity; dayIndex++){
 				getGalaxy().advanceAday();
@@ -49,8 +53,8 @@ public class GalaxyUtil {
 				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getxCoordinate()+" km, ");
 				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getyCoordinate()+" km");
 			}
-			HibernateUtil.getOpenedSession().getTransaction().commit();
-			HibernateUtil.getOpenedSession().close();
+			tx.commit();
+			session.close();
 			logger.info(daysQuantity + " days gone in the galaxy, planets info saved on DB! Today is day number: "+getGalaxy().getDayNumber());
 			canDoIt=true;
 		}catch (Exception e) {

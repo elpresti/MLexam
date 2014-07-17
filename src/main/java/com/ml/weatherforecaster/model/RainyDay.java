@@ -17,7 +17,7 @@ public class RainyDay {
 		
 	}
 	
-	public RainyDay(int dayNumber,double tringlePerimeter){
+	public void initialize(int dayNumber,double tringlePerimeter){
 		setDayNumber(dayNumber);
 		setTrianglePerimeter(tringlePerimeter);
 	}

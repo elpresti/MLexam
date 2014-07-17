@@ -18,7 +18,11 @@ public class Planet {
 	private double xCoordinate; // value of X coordinate from orientation, on a 2D plane
 	private double yCoordinate; // value of Y coordinate from orientation, on a 2D plane
 
-	public Planet(String civilizationName, int distanceToSun, int angularSpeed, boolean clockWise, int orientation){
+	public Planet(){
+		
+	}
+	
+	public void initialize(String civilizationName, int distanceToSun, int angularSpeed, boolean clockWise, int orientation){
 		setOrientation(orientation);
 		setAngularSpeed(angularSpeed);
 		setDistanceToSun(distanceToSun);

@@ -18,10 +18,12 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.6</appengine.target.version>
+        <!-- <appengine.target.version>1.9.6</appengine.target.version>   -->
+        <appengine.target.version>1.9.7</appengine.target.version>
         <jersey.version>1.18.1</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.2.6.Final</hibernate.version>
+        <!--  <hibernate.version>4.2.6.Final</hibernate.version>  -->
+        <hibernate.version>4.3.5.Final</hibernate.version>
     </properties>
 
     <dependencies>
