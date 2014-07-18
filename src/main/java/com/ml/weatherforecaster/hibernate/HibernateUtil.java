@@ -5,24 +5,38 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
 
-  public static String out="<br>HibernateUtil LOG:<br>";
+    public String out="<br>HibernateUtil LOG:<br>";
+    private static HibernateUtil uniqueInstance;
+    private SessionFactory sessionFactory;
 
-  private static final SessionFactory sessionFactory;
-	
-  static {
-		try {
-			sessionFactory = new Configuration().configure()
-					.buildSessionFactory();
-		} catch (Throwable ex) {
-			String output= "Initial SessionFactory creation failed." + ex.toString();
-			HibernateUtil.out+=output;
-			System.err.println(output);
-			throw new ExceptionInInitializerError(ex);
-		}
-	}
+    private HibernateUtil() {
+	    try {
+			sessionFactory = new Configuration().configure().buildSessionFactory();
+	    } catch (Exception e) {
+			String output= e.toString();
+			out+=output;
+			System.err.println("Exception while trying to do 'sessionFactory = new Configuration().configure().buildSessionFactory()'. Error message: "+output);
+	    }
+    }
 
-	public static SessionFactory getSessionFactory() {
+    public static HibernateUtil getInstance() {
+	  if (uniqueInstance == null) {
+		  uniqueInstance = new HibernateUtil();
+	  }
+	  return uniqueInstance;
+    }
+  
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
+
+	public String getOut() {
+		return out;
+	}
+
+	public void setOut(String out) {
+		this.out = out;
+	}
  
+	
 }

@@ -29,7 +29,7 @@ public class HibernateGalaxy {
 	public int getOptimumConditionsPeriods(){
 		int periodsAmount=0;
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
 			if (galaxy != null  &&  galaxy.getDroughtDays() != null){
@@ -46,7 +46,7 @@ public class HibernateGalaxy {
 	public ArrayList<Integer> getOptimumConditionsDays(){
 		ArrayList<Integer> optimumDays= new ArrayList<Integer>();
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 
 			Galaxy galaxy = (Galaxy) session.get(Galaxy.class,1);
@@ -65,7 +65,7 @@ public class HibernateGalaxy {
 	public int getDroughtDaysPeriods(){
 		int periodsAmount=0;
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
 			if (galaxy != null  &&  galaxy.getDroughtDays() != null){
@@ -82,7 +82,7 @@ public class HibernateGalaxy {
 	public ArrayList<Integer> getDroughtDays(){
 		ArrayList<Integer> droughtDays= new ArrayList<Integer>();
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 	
 			Galaxy galaxy = (Galaxy) session.get(Galaxy.class,1);
@@ -101,7 +101,7 @@ public class HibernateGalaxy {
 	public int getRainyDaysPeriods(){
 		int periodsAmount=0;
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
 			if (galaxy != null  &&  galaxy.getRainyDays() != null){
@@ -122,7 +122,7 @@ public class HibernateGalaxy {
 	public ArrayList<Integer> getRainyDays(){
 		ArrayList<Integer> rainyDayNumbers= new ArrayList<Integer>();
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			Galaxy galaxy = (Galaxy) session.get(Galaxy.class,1);
 			tx.commit();
@@ -142,7 +142,7 @@ public class HibernateGalaxy {
 	public ArrayList<RainyDay> getMostRainyDays(){
 		ArrayList<RainyDay> mostRainyDays = new ArrayList<RainyDay>();
 		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			Galaxy galaxy = (Galaxy) session.get(Galaxy.class,1);
 			tx.commit();

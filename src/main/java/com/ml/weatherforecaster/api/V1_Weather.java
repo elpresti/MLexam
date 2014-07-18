@@ -28,11 +28,11 @@ public class V1_Weather {
 	private int estimationDaysLimit = 10*360;
 	
 	@GET
-	@Path("/getWeather")
+	@Path("/helloWorld")
 	@Produces(MediaType.TEXT_HTML)
 	public String getWeather(){
 	    String output="No Data";
-	    output= "HOLA MUNDO!";
+	    output= "Hello World!";
 	    return output;
 	}
 	

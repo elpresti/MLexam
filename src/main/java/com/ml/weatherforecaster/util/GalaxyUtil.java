@@ -29,12 +29,13 @@ public class GalaxyUtil {
 	
 	public boolean advanceDaysInGalaxy(int daysQuantity){
 		boolean canDoIt=false;
+		/*
 		Logger logger = Logger.getLogger("API_Logger");
 		try{
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			Transaction tx = session.beginTransaction();
 			session.save(getGalaxy());
-
+*/
 			for (int dayIndex=0; dayIndex<daysQuantity; dayIndex++){
 				getGalaxy().advanceAday();
 				setStatusTxt(getStatusTxt()+"<br> <br> Day number: "+getGalaxy().getDayNumber() );
@@ -53,7 +54,7 @@ public class GalaxyUtil {
 				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getxCoordinate()+" km, ");
 				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getyCoordinate()+" km");
 			}
-			tx.commit();
+/*			tx.commit();
 			session.close();
 			logger.info(daysQuantity + " days gone in the galaxy, planets info saved on DB! Today is day number: "+getGalaxy().getDayNumber());
 			canDoIt=true;
@@ -61,6 +62,8 @@ public class GalaxyUtil {
 			System.out.println("EXEPTION!--> in advanceDaysInGalaxy(): "+e.toString());
 			logger.warning(e.toString());
 		}
+*/
+		canDoIt=true;
 		return canDoIt;
 	}
 
@@ -81,29 +84,36 @@ public class GalaxyUtil {
 					getGalaxy().createGalaxy();
 		}
 		 */
-		if (getGalaxy() == null){
-			try{
-				Session session = HibernateUtil.getSessionFactory().openSession();
-				Transaction tx = session.beginTransaction();
-				Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
-				tx.commit();
-				session.close();
-				if (galaxy != null){
-					setGalaxy(galaxy);
-				}else{
-					setGalaxy(new Galaxy());
-					getGalaxy().createGalaxy();
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-		}
 		setStatusTxt("");
-		advanceDaysInGalaxy(nextDaysToEstimate);
-		
-		//print summary of stats
+		try{
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
+			Transaction tx = session.beginTransaction();
+			Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
+			boolean newGalaxy= false;
+			if (galaxy != null){
+				setGalaxy(galaxy);
+			}else{
+				newGalaxy=true;
+				setGalaxy(new Galaxy());
+				getGalaxy().createGalaxy();
+			}
+			advanceDaysInGalaxy(nextDaysToEstimate);
+			printSummaryOfGalaxyStats();
+			if (newGalaxy){
+				session.save(getGalaxy());
+			}else{
+				session.update(getGalaxy());				
+			}
+			tx.commit();
+			session.close();
+		}catch(Exception e){
+			System.out.println(e.toString());
+		}
+	}
+
+	public void printSummaryOfGalaxyStats() {
 		if (getGalaxy().getDroughtDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> List of drought days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getDroughtDays().size()+" Drought days founded:");
 			for (int i=0; i<getGalaxy().getDroughtDays().size(); i++){
 				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getDroughtDays()).get(i) );
 			}
