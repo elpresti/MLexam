@@ -1,5 +1,4 @@
-MLexam
-July 2014
+##MLexam - July 2014
 
 ## Tools and Technologies used:
 - JDK 1.7 + JRE 1.7
@@ -21,6 +20,6 @@ http://youtu.be/gfH5vdDB0Ig
 Example: http://localhost:8080/api/v1/client/helloWorld
 
 
-Sebastián Prestifilippo
-Software Engineer
+Sebastián Prestifilippo - 
+Software Engineer - 
 www.sebapresti.com.ar
