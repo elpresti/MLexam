@@ -29,13 +29,6 @@ public class GalaxyUtil {
 	
 	public boolean advanceDaysInGalaxy(int daysQuantity){
 		boolean canDoIt=false;
-		/*
-		Logger logger = Logger.getLogger("API_Logger");
-		try{
-			Session session = HibernateUtil.getSessionFactory().openSession();
-			Transaction tx = session.beginTransaction();
-			session.save(getGalaxy());
-*/
 			for (int dayIndex=0; dayIndex<daysQuantity; dayIndex++){
 				getGalaxy().advanceAday();
 				setStatusTxt(getStatusTxt()+"<br> <br> Day number: "+getGalaxy().getDayNumber() );
@@ -54,15 +47,6 @@ public class GalaxyUtil {
 				setStatusTxt(getStatusTxt()+"X: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getxCoordinate()+" km, ");
 				setStatusTxt(getStatusTxt()+"Y: "+new ArrayList<Planet>(getGalaxy().getPlanets()).get(2).getyCoordinate()+" km");
 			}
-/*			tx.commit();
-			session.close();
-			logger.info(daysQuantity + " days gone in the galaxy, planets info saved on DB! Today is day number: "+getGalaxy().getDayNumber());
-			canDoIt=true;
-		}catch (Exception e) {
-			System.out.println("EXEPTION!--> in advanceDaysInGalaxy(): "+e.toString());
-			logger.warning(e.toString());
-		}
-*/
 		canDoIt=true;
 		return canDoIt;
 	}
@@ -76,14 +60,6 @@ public class GalaxyUtil {
 	}
 	
 	public void estimateWeatherStoreResultsAndShow(int nextDaysToEstimate){
-		/*  antes:
-		if (getGalaxy() == null){
-		 	setGalaxy(galaxy);
-		}else{
-					setGalaxy(new Galaxy());
-					getGalaxy().createGalaxy();
-		}
-		 */
 		setStatusTxt("");
 		try{
 			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();

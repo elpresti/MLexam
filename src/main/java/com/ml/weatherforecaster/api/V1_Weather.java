@@ -12,6 +12,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.ml.weatherforecaster.hibernate.HibernateGalaxy;
 import com.ml.weatherforecaster.model.RainyDay;
+import com.ml.weatherforecaster.util.DbTest;
 import com.ml.weatherforecaster.util.GalaxyUtil;
 
 import java.io.IOException;
@@ -25,27 +26,24 @@ import java.util.Date;
 public class V1_Weather {
 
 	private String defaultValue="UNKNOWN";
-	private int estimationDaysLimit = 10*360;
+	private int estimationDaysLimit = 10*365;
 	
 	@GET
 	@Path("/helloWorld")
 	@Produces(MediaType.TEXT_HTML)
 	public String getWeather(){
 	    String output="No Data";
-	    output= "Hello World!";
+	    output= "Hello World!<br>Testing DB connection... see console!";
+	    DbTest dbtest = new DbTest();
+	    dbtest.connectionTest();
 	    return output;
 	}
 	
 	@GET
 	@Path("/getTodayDayNumber")
 	@Produces(MediaType.TEXT_HTML)
-	public String doAll(){
-	    String output="No Data";
-	    if ( (GalaxyUtil.getInstance().getGalaxy() != null) ) {
-	    	output="Today day number is: "+String.valueOf(GalaxyUtil.getInstance().getGalaxy().getDayNumber());
-	    }else{
-	    	output="APP not Started yet!";
-	    }
+	public String getTodayDayNumber(){
+	    String output="Today day number is: "+HibernateGalaxy.getInstance().getTodayDayNumber();
 	    return output;
 	}
 	
@@ -176,8 +174,8 @@ public class V1_Weather {
 	      JSONObject dayWeather = new JSONObject();
 	      if (maxRainyDays.size()>0){
 	    	  for (RainyDay rainyDay : maxRainyDays){
-	    		  dayWeather.put("dia", rainyDay.getDayNumber());
-	    		  dayWeather.put("perimetro", rainyDay.getTrianglePerimeter());
+	    		  dayWeather.accumulate("dia", rainyDay.getDayNumber());
+	    		  dayWeather.accumulate("perimetro", rainyDay.getTrianglePerimeter());
 	    	  }
 	      }else{
 	    	  dayWeather.put("No rainy days", "found on DB");

@@ -31,25 +31,25 @@
     <session-factory>
 
         <!-- Database connection settings  --> 
-        <property name="connection.driver_class">org.postgresql.Driver</property>
-		<property name="connection.url">jdbc:postgresql://ec2-54-204-45-196.compute-1.amazonaws.com:5432/db9p9ve344t53i?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property>
-        <property name="connection.username">mwndnollyngkju</property>
-        <property name="connection.password">SHTKlTOVK-jeUZuKl5B0L4yXgU</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://ec2-54-204-45-196.compute-1.amazonaws.com:5432/db9p9ve344t53i?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory</property>
+        <property name="hibernate.connection.username">mwndnollyngkju</property>
+        <property name="hibernate.connection.password">SHTKlTOVK-jeUZuKl5B0L4yXgU</property>
 
         <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">1</property>
+        <property name="hibernate.connection.pool_size">1</property>
 
         <!-- SQL dialect -->
-        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
         <!-- Disable the second-level cache  -->
-        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+        <property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
 
         <!-- Echo all executed SQL to stdout -->
-        <property name="show_sql">true</property>
+        <property name="hibernate.show_sql">true</property>
 
         <!-- Drop and re-create the database schema on startup create/update -->
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Names the annotated entity class -->
         <mapping class="com.ml.weatherforecaster.model.Galaxy"/>

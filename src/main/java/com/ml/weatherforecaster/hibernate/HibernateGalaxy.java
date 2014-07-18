@@ -118,6 +118,24 @@ public class HibernateGalaxy {
 		}
 		return periodsAmount;
 	}
+
+	public int getTodayDayNumber(){
+		int todayDayNumber=0;
+		try{
+			Session session = HibernateUtil.getInstance().getSessionFactory().openSession();
+			Transaction tx = session.beginTransaction();
+			Galaxy galaxy = (Galaxy)session.get(Galaxy.class, 1);
+			if (galaxy != null  &&  galaxy.getDayNumber() > 0){
+				todayDayNumber = galaxy.getDayNumber();
+				tx.commit();
+			}
+			session.close();
+		}catch(Exception e){
+			System.out.println(e.toString());
+		}
+		return todayDayNumber;
+	}
+
 	
 	public ArrayList<Integer> getRainyDays(){
 		ArrayList<Integer> rainyDayNumbers= new ArrayList<Integer>();
