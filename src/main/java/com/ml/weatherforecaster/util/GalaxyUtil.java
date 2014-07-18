@@ -89,7 +89,7 @@ public class GalaxyUtil {
 
 	public void printSummaryOfGalaxyStats() {
 		if (getGalaxy().getDroughtDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getDroughtDays().size()+" Drought days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getDroughtDays().size()+" Drought days found:");
 			for (int i=0; i<getGalaxy().getDroughtDays().size(); i++){
 				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getDroughtDays()).get(i) );
 			}
@@ -98,7 +98,7 @@ public class GalaxyUtil {
 		}
 		
 		if (getGalaxy().getOptimumConditionsDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getOptimumConditionsDays().size()+" Optimum Conditions days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getOptimumConditionsDays().size()+" Optimum Conditions days found:");
 			for (int i=0; i<getGalaxy().getOptimumConditionsDays().size(); i++){
 				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<Integer>(getGalaxy().getOptimumConditionsDays()).get(i) );
 			}
@@ -107,7 +107,7 @@ public class GalaxyUtil {
 		}
 		
 		if (getGalaxy().getRainyDays().size() > 0 ){
-			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getRainyDays().size()+" Rainy Days founded:");
+			setStatusTxt(getStatusTxt()+"<br><br> "+getGalaxy().getRainyDays().size()+" Rainy Days found:");
 			for (int i=0; i<getGalaxy().getRainyDays().size(); i++){
 				setStatusTxt(getStatusTxt()+"<br> - Day number: "+new ArrayList<RainyDay>(getGalaxy().getRainyDays()).get(i).getDayNumber() );
 				setStatusTxt(getStatusTxt()+"<br> - Triangle perimeter: "+new ArrayList<RainyDay>(getGalaxy().getRainyDays()).get(i).getTrianglePerimeter() );
